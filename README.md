@@ -5,7 +5,7 @@ Este desafio tem como objetivo criar um Cluster Swarm local utilizando máquinas
 
 ## Pré-requisitos
 
-Certifique-se de ter o Vagrant instalado em seu sistema. Você pode encontrá-lo em Vagrant Downloads[https://www.vagrantup.com/].
+Certifique-se de ter o Vagrant instalado em seu sistema. Você pode encontrá-lo em Vagrant Downloads.
 
 Você também precisará do VirtualBox instalado em sua máquina. Faça o download em VirtualBox Downloads.
 
