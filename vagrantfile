@@ -1,0 +1,31 @@
+Vagrant.configure("2") do |config|
+
+  # Configuração da máquina master
+  config.vm.define "master" do |master|
+    master.vm.box = "ubuntu/bionic64" # Box Ubuntu 18.04 LTS
+    master.vm.hostname = "master"
+    master.vm.network "private_network", ip: "192.168.50.10" # IP fixo da máquina master
+    master.vm.provider "virtualbox" do |vb|
+      vb.memory = "1024" # 1GB de RAM
+      vb.cpus = 1 # 1 núcleo de CPU
+    end
+    master.vm.provision "docker", type: "shell", inline: "curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh"
+    master.vm.provision "shell", inline: "docker swarm init --advertise-addr 192.168.50.10" # Inicia o cluster Swarm na máquina master
+  end
+
+  # Configuração das máquinas node01, node02 e node03
+  ["node01", "node02", "node03"].each_with_index do |node, index|
+    config.vm.define node do |node_config|
+      node_config.vm.box = "ubuntu/bionic64" # Box Ubuntu 18.04 LTS
+      node_config.vm.hostname = node
+      node_config.vm.network "private_network", ip: "192.168.50.1#{index + 1}" # IP fixo das máquinas nodes
+      node_config.vm.provider "virtualbox" do |vb|
+        vb.memory = "1024" # 1GB de RAM
+        vb.cpus = 1 # 1 núcleo de CPU
+      end
+      node_config.vm.provision "docker", type: "shell", inline: "curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh"
+      node_config.vm.provision "shell", inline: "docker swarm join --token <TOKEN> 192.168.50.10:2377" # Junta as máquinas nodes ao cluster Swarm
+    end
+  end
+
+end
